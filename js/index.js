@@ -266,6 +266,8 @@ const seccionFiltros = document.getElementById("filtros");
 const buscarProducto = document.querySelector("#buscar");
 const textoABuscar = document.querySelector("#texto-filtro");
 const tipoFiltro = document.querySelector("#tipo-filtro");
+const textoalternativo = document.getElementById('texto-alternativo');
+const cantidadProdEncontrados = document.getElementById('total-productos');
 const totalProductos = [...bdProductos];
 
 
@@ -273,11 +275,13 @@ const totalProductos = [...bdProductos];
 const cargarProductos = (productos) => {
     borrarArticulos();
     if(productos.length === 0) { //si el array de productos no contiene datos se muestra un mensaje que indica la no existencia productos.
-        const textoVacio = document.getElementById('texto-vacio');
-        textoVacio.innerHTML = `<p class="texto-vacio">No hay productos por mostrar.</p>`
+        textoalternativo.innerHTML = `<p class="texto-alternativo">No hay productos por mostrar.</p>`
     }
     else { //de lo contrario, se muestran todos los productos del array
-        productos.forEach((el) => {
+            (textoABuscar.value) && (textoalternativo.innerHTML = `<p class="texto-alternativo">Resultado de la búsqueda <b>Por ${(tipoFiltro.value === '1' ? "Descripción" : "Categoría")}</b></p>
+                                                                   <span class="color-alternativo">'${textoABuscar.value}'</span>`);
+            (productos.length > 0) && (cantidadProdEncontrados.innerHTML = `<p class="total-productos">Productos encontrados : <b>${productos.length}</b></p>`);
+            productos.forEach((el) => {
             const articulo = document.createElement('div');
             let precioFormateado = el.precio.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             articulo.classList.add('articulo');
@@ -297,8 +301,8 @@ const cargarProductos = (productos) => {
 };
 const borrarArticulos = () => {
         //borra el párrafo de No hay productos para mostrar
-        const textoVacio = document.getElementById('texto-vacio');
-        textoVacio.innerHTML = `<p class="texto-vacio"></p>`
+        textoalternativo.innerHTML = `<p class="texto-alternativo"></p>`
+        cantidadProdEncontrados.innerHTML = `<p class="total-productos"></p>`
         //borra todos los productos mostrados
         seccionProductos.innerHTML = '';
 };

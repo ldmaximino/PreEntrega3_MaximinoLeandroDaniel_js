@@ -170,14 +170,26 @@ a {
     cursor: pointer;
     opacity: 0.6;
 }
-.vacio {
-    display:flex;
+.alternativo {
+    display:block;
     justify-content: center;
+    align-content: center;
 }
-.texto-vacio {
-    font-size: 1.5rem;
-    font-weight: bodl;
-    margin: 20px;
+#texto-alternativo {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-top: 15px;
+    font-size: 1.2rem;
+}
+.color-alternativo {
+    padding-left:4px;
+    font-weight: bold;
+    color:green;
+}
+.total-productos {
+    text-align:center;
+    font-size: 1rem;
 }
 /* -------------------------------------------------------- FOOTER -------------------------------------------------------- */
 .pie {
