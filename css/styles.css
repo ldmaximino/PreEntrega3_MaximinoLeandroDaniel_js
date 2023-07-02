@@ -1,0 +1,192 @@
+@charset "UTF-8";
+/* ---------------------------------------------------- COMUNES A TODOS --------------------------------------------- */
+/* Borra margen y padding de todos los elementos */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+    width: 100%;
+    height: 100%;
+    font-family: sans-serif;
+    letter-spacing: 0.03em;
+    line-height: 1.6;
+    font-family: 'Open Sans', sans-serif;
+    background-color:rgb(252, 252, 252);
+}
+ul,
+ol {
+    list-style-type: none;
+    padding: 0em;
+    padding-right: 1em;
+}
+
+/* Quita subrayados a los links y le asigna color */
+a {
+    text-decoration: none;
+    color: whitesmoke;
+    font-size: 0.9em;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* -------------------------------------------------------- ENCABEZADO -------------------------------------------------------- */
+.nav {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    width:100%;
+    height: 100px;
+    background-color: black;
+    color: white;
+    gap:10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.item-nav {
+    align-self:center;
+    padding:28px;
+}
+.item-nav:hover {
+    background-color: rgb(239, 232, 232);
+    color: black;
+}
+.carrito {
+    font-size: 25px;
+    margin-left: 10px;
+}
+
+/* -------------------------------------------------------- MAIN -------------------------------------------------------- */
+.main {
+    background-color: rgb(252, 252, 252);
+    margin: 0 60px;
+}
+.main-titulo {
+    font-size: 3rem;
+    padding: 0.5em 0;
+    text-align: center;
+    color:rgb(78, 2, 2);
+
+}
+.main-filtros {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin-bottom: 20px;
+}
+.buscar-producto {
+    display:flex;
+    justify-content: center;
+}
+.filtro-label {
+    padding: 5px 0px 0px 10px;
+    width:80px;
+    height: 34px;
+    font-size:1rem;
+    color: black;
+
+    border-radius: 2px;
+    text-align: center;
+}
+.filtro-tipo {
+    width:200px;
+    height: 35px;
+    padding: 5px;
+    margin-right: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid rgb(210, 207, 207);
+}
+.filtro-texto {
+    width:300px;
+    height: 35px;
+    padding:5px;
+    font-size:1rem;
+    border-radius: 5px;
+    border: 1px solid rgb(210, 207, 207);
+}
+.filtro-buscar {
+    margin-left:10px;
+    width:100px;
+    height: 34px;
+    font-size:1rem;
+    background-color:rgb(135, 231, 25);
+    color:white;
+    font-weight: bold;
+    border-radius: 5px;
+}
+.filtro-buscar:hover {
+    cursor:pointer;
+    opacity: 0.6;
+}
+.main-productos {
+    display:grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 50px;
+}
+.articulo {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 1px solid rgb(210, 207, 207);
+    border-radius: 2px;
+    padding-bottom: 20px;
+    overflow: hidden;
+}
+.articulo-img {
+    padding:10px;
+}
+.articulo-informacion {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+.articulo-nombre {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size:1.2rem;
+    color:gray;
+    text-align: center;
+}
+.articulo-precio {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size:1.4rem;
+    text-align: center;
+    color:gray;
+    margin-bottom: 10px;
+}
+.articulo-button {
+    padding:10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color:white;
+    background-color: rgb(243, 84, 26);
+    border-radius:5px;
+}
+.articulo-button:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+.vacio {
+    display:flex;
+    justify-content: center;
+}
+.texto-vacio {
+    font-size: 1.5rem;
+    font-weight: bodl;
+    margin: 20px;
+}
+/* -------------------------------------------------------- FOOTER -------------------------------------------------------- */
+.pie {
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width:100%;
+    height: 60px;
+    background-color: black;
+    color:white;
+    font-size:0.8rem;
+}

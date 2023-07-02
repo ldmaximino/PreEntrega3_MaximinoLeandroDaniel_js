@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <title>Vinoteca - PreEntrega3 JS</title>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a class="item-nav activo" href="index.html">Inicio</a></li>
+            <a class="item-nav" href="index.html">Contacto</a></li>
+            <a class="item-nav carrito" href="index.html">
+                <i class="bi bi-cart4"></i>
+            </a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <h1 class="main-titulo">Vinos Argentinos</h1>
+        <section id="filtros" class="main-filtros">
+            <div class="buscar-producto">
+                <label class="filtro-label">Buscar:</label>
+                <select id="tipo-filtro" class="filtro-tipo">
+                    <option selected value="1">Por Descripción</option>
+                    <option value="2">Por Categoria</option>
+                </select>
+                <input id="texto-filtro" class="filtro-texto" type="text" placeholder="Producto...">
+                <button id="buscar" class="filtro-buscar">Buscar</button>
+            </div>
+            <div class="vacio">
+                <p id="texto-vacio"></p>
+            </div>
+        </section>
+
+        <section id="productos" class="main-productos">
+    
+        </section>
+    </main>
+
+    <footer>
+        <div class="pie">
+
+            <span>Todos los derechos reservados</span>
+        </div>
+    </footer>
+    <script src="./js/index.js"></script>
+</body>
+</html>
