@@ -11,14 +11,14 @@ const bdProductos = [
         nombre: "Omnium Malbec",
         categoria: "Vinos",
         precio: 814.00,
-        url: "../img/V01.jpeg"
+        url: "./img/V01.jpeg"
     },
     {
         codigo: "V02",
         nombre: "La Poderosa Malbec",
         categoria: "Vinos",
         precio: 1439.00,
-        url: "../img/V02.jpeg"
+        url: "./img/V02.jpeg"
     },
     {
         codigo: "V03",
