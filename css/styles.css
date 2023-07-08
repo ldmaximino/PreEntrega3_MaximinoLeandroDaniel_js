@@ -31,12 +31,30 @@ a {
 }
 
 /* -------------------------------------------------------- ENCABEZADO -------------------------------------------------------- */
+
+/* .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px; // Ajusta la altura del encabezado según tus necesidades
+  background-color: #f2f2f2; // Ajusta el color de fondo según tus necesidades
+  z-index: 999;
+} */
 .nav {
     display:flex;
     flex-direction: row;
     justify-content: center;
     width:100%;
-    height: 100px;
+    height: 120px;
+    background-color: black;
+}
+.nav-1 {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    width:70%;
+    height: 120px;
     background-color: black;
     color: white;
     gap:10px;
@@ -52,10 +70,98 @@ a {
     color: black;
 }
 .carrito {
-    font-size: 25px;
+    font-size: 30px;
     margin-left: 10px;
 }
+.totales-carrito {
+    display:flex;
+    flex-direction:row;
+    justify-content: space-between;
+    font-family: 'Roboto', sans-serif;
+    
+    font-size:0.9rem;
+    width:70%;
+    max-width: 300px;
+    font-weight: 700;
+    height: 100px;
+    margin: 0.5em 0.5em 0.5em 0.5em;
+    padding:0.5em;
+    background-color: rgb(201, 182, 142);
+    color:black;
+    border:1px solid orange;
+    border-radius: 6px;
+}
+.totales-carrito:hover {
+    cursor:pointer;
+    opacity: 0.7;
+}
+.unidades {
+    display:flex;
+    flex-direction:column;
+    justify-content: space-around;
+    align-items: flex-end;
+    gap:8px;
+}
+.importe-total {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left:1em;
+    font-size:0.9rem;
+}
+.productos {
+    background-color: rgb(243, 84, 26);
+    color:white;
+    font-size:1rem;
+    font-weight: bold;
+    padding:0 0.4em;
+    border:1px solid black;
+    border-radius:30%;
+}
+.items {
+    background-color: rgb(243, 84, 26);
+    color:white;
+    font-size:1rem;
+    font-weight: bold;
+    padding:0 0.4em;
+    border:1px solid black;
+    border-radius:30%;
+}
+.importe {
+    background-color: rgb(243, 84, 26);
+    color:white;
+    font-size:1rem;
+    font-weight: bold;
+    padding:0 0.4em;
+    border:1px solid black;
+    border-radius: 5px;
+}
 
+/* --------------------------------- CARRITO FLOTANTE --------------------------------------- */
+.container-carrito-fijo {
+    position:fixed;
+    bottom:20px;
+    right: 20px;
+}
+.carrito-fijo a {
+    display: block;
+    text-decoration: none;
+    background-color: green;
+    color:white;
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    text-align: center;
+    border-radius:50%;
+    box-shadow: 0px 1px 10px rgba(0,0,0,0.4);
+    transition: all 500ms ease;
+    font-size: 2.5rem;
+}
+.carrito-fijo a:hover {
+    background-color: white;
+    color:green;
+}
 /* -------------------------------------------------------- MAIN -------------------------------------------------------- */
 .main {
     background-color: rgb(252, 252, 252);
@@ -66,7 +172,6 @@ a {
     padding: 0.5em 0;
     text-align: center;
     color:rgb(78, 2, 2);
-
 }
 .main-filtros {
     display:flex;
@@ -77,10 +182,21 @@ a {
 }
 .buscar-producto {
     display:flex;
+    flex-direction:column;
+    justify-content: center;
+}
+.buscar-producto--select {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.buscar-producto--input {
+    display:flex;
+    flex-direction: row;
     justify-content: center;
 }
 .filtro-label {
-    padding: 5px 0px 0px 10px;
+    padding-top:5px;
     width:80px;
     height: 34px;
     font-size:1rem;
@@ -90,7 +206,7 @@ a {
     text-align: center;
 }
 .filtro-tipo {
-    width:200px;
+    width:280px;
     height: 35px;
     padding: 5px;
     margin-right: 10px;
@@ -99,6 +215,7 @@ a {
     border: 1px solid rgb(210, 207, 207);
 }
 .filtro-texto {
+    margin-top:10px;
     width:300px;
     height: 35px;
     padding:5px;
@@ -107,11 +224,11 @@ a {
     border: 1px solid rgb(210, 207, 207);
 }
 .filtro-buscar {
-    margin-left:10px;
+    margin:10px 0 0 10px;
     width:100px;
     height: 34px;
     font-size:1rem;
-    background-color:rgb(135, 231, 25);
+    background-color:rgb(107, 190, 13);
     color:white;
     font-weight: bold;
     border-radius: 5px;
@@ -122,7 +239,7 @@ a {
 }
 .main-productos {
     display:grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(1,4fr);
     gap: 50px;
 }
 .articulo {
@@ -191,6 +308,372 @@ a {
     text-align:center;
     font-size: 1rem;
 }
+
+/* -------------------------------------------------------- VENTANA MODAL CARRITO ----------------------------------------- */
+.modal {
+    position:fixed;
+    top:0;
+    left:0;
+    right: 0;
+    bottom:0;
+    background-color: #111111bd;
+    display:flex;
+    opacity:0;
+    pointer-events: none;
+    transition: opacity 0.4s .5s;
+    --transform: translateY(-100vh);
+    --transition: transform 0.6s;
+}
+.modal--show {
+    opacity: 1;
+    pointer-events: unset;
+    transition: opacity .6s;
+    --transform: translateY(0);
+    --transition: transform .4s .4s;
+}
+.modal-container {
+    overflow: auto;
+    margin:auto;
+    width:90%;
+    max-width:900px;
+    max-height: 90%;
+    background-color: rgb(59, 57, 57);
+    border: 5px dotted black;;
+    border-radius: 6px;
+    padding: 0.5em 1em 2em 1em;
+    display:grid;
+    gap:0.5em;
+    place-items:center;
+    grid-auto-columns:100%;
+    transform: var(--transform);
+    transition: var(--transition);
+}
+.modal-container-titulo {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    color: rgb(250, 167, 12);
+}
+.modal-container-titulo-carrito {
+    font-size: 2.5rem;
+    margin-left: 0.5em;
+}
+.modal-productos {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    background-color: white;
+    padding: 0.5em 0.4em;
+    width:90%;
+    max-width:800px;
+    border: 1px solid orange;
+}
+.modal-productos-img {
+    width: 40px;
+}
+.modal-productos-col1 {
+    margin-left:1em;
+    text-align: left;
+    width:300px;
+}
+.modal-productos-col2 {
+    text-align: center;
+    width:50px;
+}
+.modal-productos-col3 {
+    text-align: right;
+    width:150px;
+}
+.modal-productos-eliminar {
+    color: red;
+    font-weight: 800;
+    margin-left:1.5em;
+    padding:0.1em 0.5em;
+    border: 1px solid white;
+    border-radius: 40%;
+    background-color: bisque;
+}
+.modal-close {
+    margin-top:0em;
+    margin-left:36em;
+    text-decoration: none;
+    color:white;
+    background-color: red;
+    padding: 0.8em 1.2em;
+    border: 1px solid white;
+    border-radius: 6px;
+    display:inline-block;
+    font-weight: 800;
+    transition: background-color .3s;
+}
+.modal-close:hover {
+    color:red;
+    background-color: white;
+}
+.modal-subtotal-carrito {
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    color: white;
+    font-size:1.1rem;
+    font-weight: bold;
+    background-color: rgb(221, 80, 24);
+    padding: 0.5em 0.4em;
+    width: 90%;
+    max-width:800px;
+    border: 3px solid rgb(130, 233, 14);
+}
+.modal-subtotal-carrito-1 {
+    margin-left:1em;
+    text-align: left;
+    width:230px;
+}
+.modal-subtotal-carrito-2 {
+    text-align: center;
+    width:50px;
+}
+.modal-subtotal-carrito-3 {
+    text-align: right;
+    width:200px;
+    margin-right: 10px
+}
+
+.modal-pie {
+    display:flex;
+    gap:50px;
+}
+.finalizar-compra {
+    margin-top:1.5em;
+    color:white;
+    background-color: rgb(11, 168, 11);
+    padding: 0.8em 1.2em;
+    border: 1px solid white;
+    border-radius: 6px;
+    font-weight: 800;
+    transition: background-color .3s;
+}
+.finalizar-compra:hover {
+    cursor: pointer;
+    opacity: 0.6;
+    color:rgb(11, 168, 11);
+    background-color: white;
+}
+.vaciar-carrito {
+    margin-top:1.5em;
+    color:white;
+    background-color: rgb(182, 23, 23);
+    padding: 0.8em 1.2em;
+    border: 1px solid white;
+    border-radius: 6px;
+    font-weight: 800;
+    transition: background-color .3s;
+}
+.vaciar-carrito:hover {
+    cursor: pointer;
+    opacity: 0.6;
+    color: rgb(182, 23, 23);
+    background-color: white;
+}
+/* -------------------------------------------------------- VENTANA MODAL FIN COMPRA -------------------------------------- */
+.modal-fincompra {
+    position:fixed;
+    top:0;
+    left:0;
+    right: 0;
+    bottom:0;
+    background-color: #111111bd;
+    display:flex;
+    opacity:0;
+    pointer-events: none;
+    transition: opacity 0.4s .5s;
+    --transform: translateY(-100vh);
+    --transition: transform 0.6s;
+}
+.modal-fincompra--show {
+    opacity: 1;
+    pointer-events: unset;
+    transition: opacity .6s;
+    --transform: translateY(0);
+    --transition: transform .4s .4s;
+}
+.modal-fincompra-container {
+    overflow: auto;
+    margin:auto;
+    width:90%;
+    max-width:900px;
+    max-height: 100%;
+    color:white;
+    background-color: rgb(59, 57, 57);
+    border: 5px dotted black;;
+    border-radius: 6px;
+    padding: 0.5em 1em 2em 1em;
+    display:grid;
+    gap:0.5em;
+    place-items:center;
+    grid-auto-columns:100%;
+    transform: var(--transform);
+    transition: var(--transition);
+}
+.modal-fincompra-titulo {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin-left: 5em;
+    color: rgb(219, 90, 3);
+    font-size: 1.3rem;
+}
+.modal-fincompra-datospersona {
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-content: center;
+    width:90%;
+    max-width:500px;
+    border:2px solid gray;
+    padding:1em 2em;
+    border-radius: 6px;
+
+}
+.modal-fincompra-datospersona label {
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+.modal-fincompra-datospersona input {
+    width:400px;
+    height: 26px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0 0.2em;
+    border-radius: 6px;
+    margin-bottom:0.8em;
+}
+.modal-fincompra-datospersona h3 {
+    text-align: center;
+    margin-bottom: 0.5em;
+}
+.modal-fincompra-datospago {
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-content: center;
+    width:90%;
+    max-width:500px;
+    border:2px solid gray;
+    padding:1em 2em;
+    border-radius: 6px;
+}
+.modal-fincompra-datospago h3 {
+    text-align: center;
+    margin-bottom: 0.5em;
+}
+.modal-fincompra-datospago label {
+    font-size: 1rem;
+    font-weight: bold;
+}
+.modal-fincompra-datospago select {
+    width:80%;
+    height: 30px;
+    margin-top:0.8em;
+    margin-left:0em;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0 0.2em;
+    border-radius: 6px;
+    margin-bottom:0.8em;
+}
+.total-apagar {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    font-size:1rem;
+    font-weight: bold;
+    margin:1em 1em;
+}
+.total-fpago {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.descripcion-fpago-siv {
+    font-size:0.8rem;
+    font-weight: bold;
+    color:black;
+    background-color: yellow;
+    padding:0.2em;
+    border-radius: 6px;
+}
+.descripcion-fpago-nov {
+    color:#111111bd;
+    background-color: #111111bd;
+}
+.etiqueta-totalapagar {
+    font-size:1.1rem;
+    font-weight: bold;
+}
+.importe-totalapagar {
+    background-color: rgb(243, 84, 26);
+    color:white;
+    font-size:1.2rem;
+    font-weight: bold;
+    padding:0 0.4em;
+    border:1px solid black;
+    border-radius: 5px;
+    margin-left:2em;
+}
+.finalizar-pago {
+    margin-top:1em;
+    width:auto;
+    height: auto;
+    padding: 0.5em;
+    font-family: "Montserrat", sans-serif;
+    font-size:1.5em;
+    font-weight: 600;
+    background-color:rgb(243, 84, 26);
+    color: white;
+    border: 1px solid black;
+    border-radius: 6px;
+}
+.finalizar-pago:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+.close-fincompra {
+    margin-top:0em;
+    text-decoration: none;
+    margin-left:5em;
+    color:white;
+    background-color: red;
+    padding: 0.2em 0.5em;
+    border: 1px solid white;
+    border-radius: 5px;
+    font-weight: 800;
+    transition: background-color .3s;
+}
+.close-fincompra:hover {
+    cursor:pointer;
+    opacity: 0.5;
+}
+.volver-carrito {
+    color: rgb(175, 29, 29);
+    margin-top:1em;
+    font-size: 0.8rem;
+    font-weight: bold;
+    background-color: rgb(201, 176, 176);
+    padding:0em 0.5em;
+    border: 1px solid black;
+    border-radius: 6px;
+}
+.volver-carrito:hover {
+    opacity: 0.5;
+}
 /* -------------------------------------------------------- FOOTER -------------------------------------------------------- */
 .pie {
     display:flex;
@@ -201,4 +684,125 @@ a {
     background-color: black;
     color:white;
     font-size:0.8rem;
+}
+
+/* -------------------------------------------------------- @MEDIA QUERY -------------------------------------------------------- */
+/* Aplica media querys para formato Tablet PRODUCTOS desde 900px a 1199px */
+@media (min-width: 900px) and (max-width: 1199px) {
+    .nav-1 {
+        padding-left:10em;
+    }
+    .main-productos {
+        display:grid;
+        grid-template-columns: repeat(2,2fr);
+    }
+    .buscar-producto {
+        display:flex;
+        flex-direction:row;
+        justify-content: center;
+    }
+    .buscar-producto--select {
+        display:flex;
+        flex-direction: row;
+    }
+    .buscar-producto--input {
+        display:flex;
+        flex-direction: row;
+    }
+    .filtro-texto {
+        margin-top: 0px;
+    }
+    .filtro-buscar {
+        margin-top: 0px;
+    }
+    .modal-close {
+        margin-left: 50em;
+    }
+    .modal-fincompra-titulo {
+        margin-left:11em;
+        font-size:1.4rem;
+    }
+    .close-fincompra {
+        margin-left:11em;
+    }
+    .modal-subtotal-carrito-1 {
+        width:339px;
+    }
+    .modal-subtotal-carrito-2 {
+        width:60px;
+    }
+    .modal-subtotal-carrito-3 {
+        width:291px;
+        margin-right:45px;
+    }
+}
+
+/* Aplica media querys para formato Tablet PRODUCTOS desde 1200px */
+@media (min-width: 1200px) {
+    .nav-1 {
+        padding-left:15em;
+    }
+    .main-productos {
+        display:grid;
+        grid-template-columns: repeat(4,1fr);
+    }
+    .buscar-producto {
+        display:flex;
+        flex-direction:row;
+        justify-content: center;
+    }
+    .buscar-producto--select {
+        display:flex;
+        flex-direction: row;
+    }
+    .buscar-producto--input {
+        display:flex;
+        flex-direction: row;
+    }
+    .filtro-texto {
+        margin-top: 0px;
+    }
+    .filtro-buscar {
+        margin-top: 0px;
+    }
+    .totales-carrito {
+        font-size:1.1rem;
+        width:90%;
+        max-width:400px;
+        padding:1em;
+    }
+    .importe-total {
+        margin-left: 3em;
+        font-size:1.1rem;
+    }
+    .productos {
+        font-size:1.3rem;
+    }
+    .items {
+        font-size:1.3rem;
+    }
+    .importe {
+        margin-top:0.3em;
+        font-size:1.3rem;
+    }
+    .modal-close {
+        margin-left: 56em;
+    }
+    .modal-fincompra-titulo {
+        margin-left:12em;
+        font-size:1.4rem;
+    }
+    .close-fincompra {
+        margin-left:12em;
+    }
+    .modal-subtotal-carrito-1 {
+        width:342px;
+    }
+    .modal-subtotal-carrito-2 {
+        width:60px;
+    }
+    .modal-subtotal-carrito-3 {
+        width:290px;
+        margin-right: 45px;
+    }
 }
