@@ -1,6 +1,6 @@
 //Importar
-import { bdProductos } from "./bdProductos.js";
-import { bdFPago } from "./bdFPago.js";
+import { bdProductos } from "./bdProductos.js"; //Base de datos de productos disponibles
+import { bdFPago } from "./bdFPago.js"; //opciones de pago
 
 //------------------------------------------------------------------- DECLARACION DE VARIABLES Y CONSTANTES ----------------------------------------------
 const textoAlternativo = document.getElementById('texto-alternativo');
@@ -26,32 +26,36 @@ const carritoFijo = document.querySelector(".carrito-fijo");
 export const totalProductos = [...bdProductos];
 let miCarrito = [];
 let totalFinalCarrito = 0;
-//Expresiones Regulares
-const regexEMail = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-const regexApellidoNombre = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s'-]+$/;
+let cantCuota = 0;
+let importeCuota = 0;
+
+//------------------------------------------------------------------- EXPRESIONES REGULARES ----------------------------------------------
+const regexEMail = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/; //para validar correo electrónico
+const regexApellidoNombre = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s'-]+$/; //para validar ingreso de Apellido y Nombre
 
 //----------------------------------------------------------------------------- DECLARACION DE CLASES ----------------------------------------------------
+//clase del carrito de compra
 class CarritoCompra {
-    constructor(codigo,nombre,cantidad,precio) { //me resulta manejar más fácil así al constructor que utilizando desestructuración
+    constructor(codigo, nombre, cantidad, precio) { //me resulta manejar más fácil así al constructor que utilizando desestructuración
         this.codigo = codigo;
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precio = precio;
     }
     //Se declaran las funciones get y set que se van a utilizar
-    getCodigo = function() {
+    getCodigo = function () {
         return this.codigo;
     }
-    getNombre = function() {
+    getNombre = function () {
         return this.nombre;
     }
-    getCantidad = function() {
+    getCantidad = function () {
         return this.cantidad;
     }
-    getPrecio = function() {
+    getPrecio = function () {
         return this.precio;
     }
-    setCantidad = function(cantidad) {
+    setCantidad = function (cantidad) {
         this.cantidad = cantidad;
     }
 };
@@ -62,26 +66,26 @@ export const cargaCarritoLS = () => {
     const micarritoLS = JSON.parse(localStorage.getItem('micarrito')) || []; //se hace la lectura del localstorage para ver si el carrito tiene contenido
     //Instancia todos los registros del carrito
     micarritoLS.forEach((el) => {
-        miCarrito.push(new CarritoCompra(el.codigo , el.nombre , el.cantidad , el.precio)); //Se agrega el producto en el carrito
-    });-carrito-1
+        miCarrito.push(new CarritoCompra(el.codigo, el.nombre, el.cantidad, el.precio)); //Se agrega el producto en el carrito
+    }); -carrito - 1
     actualizaTotalesCarrito(miCarrito); //actualiza total carrito
 };
 
 //Actualiza la clave "micarrito" en el localStorage
 const seteaCarritoLS = (miCarrito) => {
-    localStorage.setItem("micarrito",JSON.stringify(miCarrito));
+    localStorage.setItem("micarrito", JSON.stringify(miCarrito));
     actualizaTotalesCarrito(miCarrito); //actualiza total carrito
 };
 
 //Verifica si el producto existe en el carrito. Si existe retorna o devuelve la cantidad de ese producto agregada al carrito y si no lo encuentra devuelve cero.
-const verificaCantidadEnCarrito = (codigo='') => {
-    if(miCarrito.length === 0) return 0; //Si el carrito está vacío, retorna 0
+const verificaCantidadEnCarrito = (codigo = '') => {
+    if (miCarrito.length === 0) return 0; //Si el carrito está vacío, retorna 0
     const buscar = miCarrito.find((producto) => producto.getCodigo() === codigo);
-    if(buscar) return buscar.getCantidad(); //si encuentra el código en miCarrito, devuelve la cantidad comprada
+    if (buscar) return buscar.getCantidad(); //si encuentra el código en miCarrito, devuelve la cantidad comprada
     return 0; //si no encuentra el código en el carrito, devuelve cero
 };
 
-//actualiza Totales del Carrito en el menú
+//actualiza Totales del Carrito en el menú superior a la derecha
 const actualizaTotalesCarrito = (miCarrito) => {
     const totalProductos = document.querySelector(".productos");
     const totalItems = document.querySelector(".items");
@@ -110,11 +114,11 @@ const actualizaTotalesCarrito = (miCarrito) => {
 };
 
 //Actualiza cantidad de un producto existente o agrega un producto al carrito
-const actualizaMiCarrito = (codigo,nombre,precio,cantidad) => {
+const actualizaMiCarrito = (codigo, nombre, precio, cantidad) => {
     const indice = miCarrito.findIndex((producto) => producto.getCodigo() === codigo);
     (indice >= 0) //Si el método 'findIndex' encuentra el registro indice va a ser igual o mayor a cero, de lo contrario es -1
         ? miCarrito[indice].setCantidad(cantidad + 1) //Actualiza la cantidad del producto en el carrito sumando 1.
-        : miCarrito.push(new CarritoCompra(codigo,nombre,1,precio)); //Se agrega el producto en el carrito
+        : miCarrito.push(new CarritoCompra(codigo, nombre, 1, precio)); //Se agrega el producto en el carrito
     seteaCarritoLS(miCarrito);
     alertAgregado('success', 'producto agregado', '#dd710c');
 };
@@ -139,10 +143,10 @@ const Toast = Swal.mixin({
 });
 //////////////////////////////////////////
 
-//Muestra los productos en el DOM generando los elementos HTML
+//Muestra los productos disponibles para la venta en el DOM generando los elementos HTML
 export const cargarProductos = (productos) => {
     borrarArticulos();
-    if(productos.length === 0) { //si el array de productos no contiene datos se muestra un mensaje que indica la no existencia productos.
+    if (productos.length === 0) { //si el array de productos no contiene datos se muestra un mensaje que indica la no existencia productos.
         textoAlternativo.innerHTML = `<p class="texto-alternativo">No hay productos por mostrar.</p>`
     }
     else { //de lo contrario, se muestran todos los productos del array
@@ -163,8 +167,8 @@ export const cargarProductos = (productos) => {
             botonComprar.classList.add("articulo-button");
             botonComprar.textContent = "Comprar";
             botonComprar.addEventListener("click", () => {
-                agregaArticulo(el.codigo,el.nombre,el.precio);
-            }); 
+                agregaArticulo(el.codigo, el.nombre, el.precio);
+            });
             articulo.appendChild(botonComprar);
             seccionProductos.appendChild(articulo);
         });
@@ -172,33 +176,33 @@ export const cargarProductos = (productos) => {
 };
 
 //Agrega productos al carrito, previa verificación si el producto ya existe. En ese caso se suma 1 a la cantidad. Si no existe se crea una instancia u objeto invocando a la función actualizaMiCarrito
-const agregaArticulo = (codigo,nombre,precio) => {
+const agregaArticulo = (codigo, nombre, precio) => {
     let cantidad = verificaCantidadEnCarrito(codigo); //verifica si el código ya existe en el carrito y devuelve la cantidad
-    actualizaMiCarrito(codigo,nombre,precio,cantidad);
+    actualizaMiCarrito(codigo, nombre, precio, cantidad);
 };
 
 //Borra los productos en el DOM
 const borrarArticulos = () => {
-        //borra el párrafo de No hay productos para mostrar
-        textoAlternativo.innerHTML = `<p class="texto-alternativo"></p>`
-        cantidadProdEncontrados.innerHTML = `<p class="total-productos"></p>`
-        //borra todos los productos mostrados
-        seccionProductos.innerHTML = '';
+    //borra el párrafo de No hay productos para mostrar
+    textoAlternativo.innerHTML = `<p class="texto-alternativo"></p>`
+    cantidadProdEncontrados.innerHTML = `<p class="total-productos"></p>`
+    //borra todos los productos mostrados
+    seccionProductos.innerHTML = '';
 };
 //Filtrar productos
 const filtrarProductos = () => {
     let filtroProductos = [];
-        (tipoFiltro.value === "1")
+    (tipoFiltro.value === "1")
         ? filtroProductos = totalProductos.filter((el) => (el.nombre.toLowerCase()).includes(textoABuscar.value.toLowerCase())) //busca por nombre del producto value = 1
         : filtroProductos = totalProductos.filter((el) => (el.categoria.toLowerCase()).includes(textoABuscar.value.toLowerCase())); //busca por categoría del producto value = 2
     return filtroProductos;
 };
 
-//HTML CARRITO
+//HTML CARRITO. Crea el código html dinámico del carrito de compras
 const agregaHtmlCarrito = (miCarrito) => {
-    const miCarritoOrdenado = miCarrito.slice().sort(function(a, b) {
+    const miCarritoOrdenado = miCarrito.slice().sort(function (a, b) {
         return miCarrito.indexOf(b) - miCarrito.indexOf(a);
-      });
+    });
     miCarritoOrdenado.forEach((el) => {
         const producto = document.createElement('div');
         let precioUnitFormateado = el.getPrecio().toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); //da formato al precio unitario
@@ -207,7 +211,7 @@ const agregaHtmlCarrito = (miCarrito) => {
         const urlProducto = buscaURLProducto(el.codigo);
         producto.classList.add('modal-productos');
         producto.id = el.codigo;
-        
+
         producto.innerHTML = ` 
                             <img class="modal-productos-img" src="${urlProducto.url}" alt="${el.getNombre()}"></img>
                             <span class="modal-productos-col1">${el.getNombre()}</span>
@@ -216,42 +220,42 @@ const agregaHtmlCarrito = (miCarrito) => {
                             <span class="modal-productos-col3">${precioTotalFormateado}</span>
                             <a class="modal-productos-eliminar" href="#">X</a>
                             </div>`
-        
+
         modalContainer.insertBefore(producto, modalContainerTitulo.nextSibling);
         const eliminarProducto = document.querySelector(".modal-productos-eliminar");
         //evento "click" para eliminar un producto del carrito
         eliminarProducto.addEventListener("click", () => {
-            confirmaEliminarProducto(miCarrito,el.codigo,el.nombre);       
+            confirmaEliminarProducto(miCarrito, el.codigo, el.nombre);
         });
-        
+
     });
 };
 
 //muestra el contenido del carrito de compras
 const muestraCarritoCompras = () => {
-    if(miCarrito.length === 0) {
-        alertaCarritoVacio(0,false);
-     }
-     else {
-         limpiaHtmlCarrito();
-         modalShowToggleCarrito();
-         agregaHtmlCarrito(miCarrito); //Crea el html para los productos que se encuentran en el carrito
-     }
+    if (miCarrito.length === 0) {
+        alertaCarritoVacio(0, false);
+    }
+    else {
+        limpiaHtmlCarrito();
+        modalShowToggleCarrito();
+        agregaHtmlCarrito(miCarrito); //Crea el html para los productos que se encuentran en el carrito
+    }
 };
 
 //borra un producto del carrito
-const borraProducto = (miCarrito,codigoProducto) => {
+const borraProducto = (miCarrito, codigoProducto) => {
     //busco el indice correspondiente al objeto
     let index = miCarrito.findIndex((objeto) => {
         return objeto.codigo === codigoProducto;
     });
     //borro el objeto del array del carrito
-    if(index !== -1) {
-        miCarrito.splice(index,1);
+    if (index !== -1) {
+        miCarrito.splice(index, 1);
         seteaCarritoLS(miCarrito);
         const itemABorrar = document.getElementById(codigoProducto);
         itemABorrar.remove();
-        if(miCarrito.length === 0) {
+        if (miCarrito.length === 0) {
             setTimeout(() => {
                 modalShowToggleCarrito();
             }, 1500);
@@ -259,11 +263,12 @@ const borraProducto = (miCarrito,codigoProducto) => {
     }
 };
 
-const confirmaEliminarProducto = (miCarrito,codigoProducto,nombreProducto) => {
+//solicita la confirmación para eliminar un producto agregado al carrito
+const confirmaEliminarProducto = (miCarrito, codigoProducto, nombreProducto) => {
     //Confirma la eliminación?
     const urlProducto = buscaURLProducto(codigoProducto);
     //en esta combiné 2 sweetalerts. 'A confirm dialog, with a function attached to the "Confirm"-button' + 'A custom positioned dialog'
-    Swal.fire({ 
+    Swal.fire({
         title: `${nombreProducto} será eliminado! Confirma?`,
         imageUrl: urlProducto.url,
         imageWidth: 80,
@@ -274,10 +279,10 @@ const confirmaEliminarProducto = (miCarrito,codigoProducto,nombreProducto) => {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Si, confirmo!'
     }).then((result) => {
-        if (result.isConfirmed) { 
-            borraProducto(miCarrito,codigoProducto);
+        if (result.isConfirmed) {
+            borraProducto(miCarrito, codigoProducto);
             let textoTitle = "El producto ha sido eliminado!";
-            if(miCarrito.length === 0) textoTitle = "El carrito ha sido vaciado!";
+            if (miCarrito.length === 0) textoTitle = "El carrito ha sido vaciado!";
             Swal.fire({
                 position: 'center',
                 icon: 'success',
@@ -289,8 +294,9 @@ const confirmaEliminarProducto = (miCarrito,codigoProducto,nombreProducto) => {
     })
 };
 
+//Vacía el carrito de compras
 const vaciaCarritoCompras = () => {
-    Swal.fire({ 
+    Swal.fire({
         title: `El carrito será vaciado! Confirma?`,
         imageWidth: 80,
         imageHeight: 120,
@@ -300,13 +306,13 @@ const vaciaCarritoCompras = () => {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Si, confirmo!'
     }).then((result) => {
-        if (result.isConfirmed) { 
+        if (result.isConfirmed) {
             miCarrito.forEach((el) => {
                 const itemABorrar = document.getElementById(el.codigo);
-                itemABorrar.remove();
+                itemABorrar.remove(); //borra el contenido del html del carrito para cada elemento o producto
             });
-            miCarrito.splice(0);
-            seteaCarritoLS(miCarrito);
+            miCarrito.splice(0); //vacía el array
+            seteaCarritoLS(miCarrito); //actualiza el localstorage
             Swal.fire({
                 position: 'center',
                 icon: 'success',
@@ -316,12 +322,13 @@ const vaciaCarritoCompras = () => {
             })
             setTimeout(() => {
                 modalShowToggleCarrito();
-            }, 1500);
+            }, 1500); //espera 1,5 segundos para quitar el carrito vacío de la pantalla
         }
     })
 };
 
-const alertaCarritoVacio = (miliSeg,ocultaModal) =>{
+//Avisa que el carrito está vacío en el caso que se quiera acceder por las 3 vías de acceso existentes (Carrito del Menú, Totalizador del Carrito del menú (arriba-derecha) y el carrito flotante (abajo-derecha))
+const alertaCarritoVacio = (miliSeg, ocultaModal) => {
     setTimeout(() => {
         (ocultaModal) && modalShowToggleCarrito();
         Swal.fire({
@@ -337,9 +344,10 @@ const alertaCarritoVacio = (miliSeg,ocultaModal) =>{
     }, miliSeg);
 };
 
+//Limpia el html del carrito de compras
 const limpiaHtmlCarrito = () => {
     const productosModalCarrito = document.querySelectorAll(".modal-productos");
-    productosModalCarrito.forEach((div) =>{
+    productosModalCarrito.forEach((div) => {
         div.remove();
     })
 };
@@ -352,6 +360,8 @@ const modalShowToggleCarrito = () => {
 const modalShowToggleFinCompra = () => {
     modalFinCompra.classList.toggle('modal-fincompra--show');
 };
+
+//Agrega código html del formulario modal de la forma de apago
 const agregaHtmlFPago = () => {
     const totalAPagar = document.querySelector(".importe-totalapagar");
     totalAPagar.textContent = totalFinalCarrito.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -373,6 +383,7 @@ const agregaHtmlFPago = () => {
         selectFPago.appendChild(opt)
     });
 };
+//limpia html de forma de pago
 const limpiaHtmlFPago = () => {
     while (selectFPago.firstChild) {
         selectFPago.removeChild(selectFPago.firstChild);
@@ -388,25 +399,26 @@ const validacionDatosPersonales = () => {
     //Para revisar los datos ingresados se utiliza "Operador Ternario" + "Operador Lógico AND(&&) o de Cortocircuito", así se evita el uso de ELSE.
     //Nombre
     if (!nombre.value) return alertaDatosIngresados('Debe ingresar su nombre.') && false;
-    if(!regexApellidoNombre.test(nombre.value)) return alertaDatosIngresados('El nombre ingresado no es válido.') && false;
+    if (!regexApellidoNombre.test(nombre.value)) return alertaDatosIngresados('El nombre ingresado no es válido.') && false;
     //Apellido
-    if(!apellido.value) return alertaDatosIngresados('Debe ingresar su apellido.') && false;
-    if(!regexApellidoNombre.test(apellido.value)) return alertaDatosIngresados('El apellido ingresado no es válido.') && false;
+    if (!apellido.value) return alertaDatosIngresados('Debe ingresar su apellido.') && false;
+    if (!regexApellidoNombre.test(apellido.value)) return alertaDatosIngresados('El apellido ingresado no es válido.') && false;
     //Email
     if (!email.value) return alertaDatosIngresados('Debe ingresar su e-mail.') && false;
-    if(!regexEMail.test(email.value)) return alertaDatosIngresados('El correo ingresado no es válido') && false;
+    if (!regexEMail.test(email.value)) return alertaDatosIngresados('El correo ingresado no es válido') && false;
     //Domicilio
-    if(!domicilio.value) return alertaDatosIngresados('Debe ingresar su domicilio.') && false;
+    if (!domicilio.value) return alertaDatosIngresados('Debe ingresar su domicilio.') && false;
     //Localidad
-    if(!ciudad.value) return alertaDatosIngresados('Debe ingresar su ciudad.') && false;
-    
+    if (!ciudad.value) return alertaDatosIngresados('Debe ingresar su ciudad.') && false;
+
     //si las revisiones/validaciones son correctas se retorna true;
     return true;
 };
+//Valida la forma de pago
 const validaFPago = (opcionSel, value) => {
-    if(opcionSel === 0) return alertaDatosIngresados('Debe seleccionar una forma de pago.') && false;
+    if (opcionSel === 0) return alertaDatosIngresados('Debe seleccionar una forma de pago.') && false;
     const buscar = bdFPago.find((el) => el.codigo === value);
-    if(buscar) {
+    if (buscar) {
         const desFPago = document.querySelector("#descripcion-fpago");
         let cantPago = "";
         let totalPago = (totalFinalCarrito + (totalFinalCarrito * buscar.tasa / 100));
@@ -414,17 +426,19 @@ const validaFPago = (opcionSel, value) => {
         impCuota = impCuota.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         totalPago = totalPago.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         (buscar.cuotas > 1) ? cantPago = "pagos" : cantPago = "pago";
-        if(buscar.cuotas > 1) {
+        if (buscar.cuotas > 1) {
             desFPago.classList.add('descripcion-fpago-siv');
             desFPago.classList.remove('descripcion-fpago-nov');
             desFPago.textContent = `En ${buscar.cuotas} ${cantPago} de $${impCuota}. Total: $${totalPago}. Recargo ${buscar.tasa}%`;
-            
-        } 
+
+        }
         else {
             desFPago.classList.add('descripcion-fpago-nov');
             desFPago.classList.remove('descripcion-fpago-siv');
             desFPago.textContent = "";
         }
+        cantCuota = buscar.cuotas;
+        importeCuota = impCuota.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
     return true;
 };
@@ -434,10 +448,15 @@ const alertaDatosIngresados = (texto) => {
         confirmButtonColor: 'red'
     });
 };
+//Se solicita al usuario que confirme la compra
 const confirmaCompra = () => {
+    let descri = "pago";
+    (cantCuota > 1) ? descri = "pagos" : descri = "pago";
     Swal.fire({
-        title: 'Se va a efectuar la compra en X pago/s de $222.',
-        text: "Confirma?",
+        title: `Se va a efectuar la compra en ${cantCuota} ${descri} de ${importeCuota}.`,
+        texto: "Confirma?",
+        html:
+            '<span style="font-size: 1.5rem;"><b>Confirma?</b></span>',
         imageUrl: './img/compra.jpeg',
         imageWidth: 350,
         imageHeight: 200,
@@ -450,7 +469,7 @@ const confirmaCompra = () => {
         cancelButtonText: 'No quiero realizar la compra!'
     }).then((result) => {
         if (result.isConfirmed) {
-            compraExitosa();
+            compraExitosa(); //Si acepta la compra se llama a la función compraExitosa
             Swal.fire({
                 position: 'center',
                 //icon: 'success',
@@ -468,6 +487,7 @@ const confirmaCompra = () => {
         }
     })
 };
+//si la compra se confirma, se borra el array de miCarrito y se actualiza el localstorage
 const compraExitosa = () => {
     miCarrito.splice(0);
     seteaCarritoLS(miCarrito);
@@ -475,14 +495,14 @@ const compraExitosa = () => {
 //----------------------------------------------------------------------------- CARGA TODOS LOS EVENTOS ----------------------------------------------------
 export const cargarEventos = () => {
     //evento "click" del botón 'Buscar' producto
-    buscarProducto.addEventListener("click",() => {
+    buscarProducto.addEventListener("click", () => {
         const filtroProductos = filtrarProductos();
         cargarProductos(filtroProductos);
     });
 
     //evento "Enter" de la caja de texto donde se ingresa el producto a buscar
     textoABuscar.addEventListener("keypress", (e) => {
-        if(e.key === 'Enter') {
+        if (e.key === 'Enter') {
             const filtroProductos = filtrarProductos();
             cargarProductos(filtroProductos);
         };
@@ -497,13 +517,18 @@ export const cargarEventos = () => {
     //evento "click" del dropdown tipo Filtro
     tipoFiltro.addEventListener("change", (e) => {
         const { value } = e.target;
-        if(value === "1")  {
+        if (value === "1") {
             textoABuscar.value = "";
             textoABuscar.placeholder = "Producto...";
         }
         else {
             textoABuscar.value = "";
-            textoABuscar.placeholder = "Categoría...";
+            const categoriasUnicas = totalProductos.reduce((categorias, producto) => {
+                categorias.add(producto.categoria);
+                return categorias;
+            }, new Set());
+            const descripcionCategorias = [...categoriasUnicas].join(', ');
+            textoABuscar.placeholder = descripcionCategorias + " ...";
         }
     });
 
@@ -516,7 +541,7 @@ export const cargarEventos = () => {
     //evento "click" sobre los totales del carrito del menú. Para visualizar la totalidad del carrito de compras.
     totalesCarrito.addEventListener("click", (e) => {
         e.preventDefault();
-         muestraCarritoCompras();
+        muestraCarritoCompras();
     });
 
     //evento "click" del carrito fijo (abajo derecha). Para visualizar la totalidad del carrito de compras.
@@ -534,7 +559,7 @@ export const cargarEventos = () => {
             modalShowToggleFinCompra(); //muestra el modal de la finalización de la compra
             agregaHtmlFPago();
         }, 200);
-        
+
     });
 
     //evento "click" sobre vaciar carrito de compra
@@ -562,7 +587,7 @@ export const cargarEventos = () => {
 
     finalizarPago.addEventListener("click", (e) => {
         e.preventDefault();
-        if(validacionDatosPersonales() && validaFPago(selectFPago.selectedIndex)) {
+        if (validacionDatosPersonales() && validaFPago(selectFPago.selectedIndex)) {
             confirmaCompra();
         }
     })
@@ -574,7 +599,7 @@ export const cargarEventos = () => {
 
     //evento "keydown" con key = "Escape" para poder cerrar el modal del carrito con la tecla "ESC"
     document.addEventListener("keydown", (e) => {
-        if(e.key === "Escape") {
+        if (e.key === "Escape") {
             modal.classList.remove('modal--show');
             modalFinCompra.classList.remove('modal-fincompra--show');
         }
