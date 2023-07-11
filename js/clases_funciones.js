@@ -454,7 +454,7 @@ const confirmaCompra = () => {
     (cantCuota > 1) ? descri = "pagos" : descri = "pago";
     Swal.fire({
         title: `Se va a efectuar la compra en ${cantCuota} ${descri} de ${importeCuota}.`,
-        texto: "Confirma?",
+        text: "Confirma?",
         html:
             '<span style="font-size: 1.5rem;"><b>Confirma?</b></span>',
         imageUrl: './img/compra.jpeg',
