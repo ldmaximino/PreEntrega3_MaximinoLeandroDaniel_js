@@ -432,6 +432,11 @@ const validaFPago = (opcionSel, value) => {
             desFPago.textContent = `En ${buscar.cuotas} ${cantPago} de $${impCuota}. Total: $${totalPago}. Recargo ${buscar.tasa}%`;
 
         }
+        else if(buscar.detalles !== "") {
+            desFPago.classList.add('descripcion-fpago-siv');
+            desFPago.classList.remove('descripcion-fpago-nov');
+            desFPago.textContent = `Deberá transferir al CBU Nº ${buscar.detalles}`;
+        }
         else {
             desFPago.classList.add('descripcion-fpago-nov');
             desFPago.classList.remove('descripcion-fpago-siv');
