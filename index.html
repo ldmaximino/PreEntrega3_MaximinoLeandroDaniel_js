@@ -19,6 +19,16 @@
         <!-- Barra de Navegación o Encabezado -->
         <nav class="nav">
             <!-- Inicio - Contacto e Icono del Carrito de Compras -->
+            <div class="nav-login">
+                <div class="nav-login-open">
+                    <i class="bi bi-person-circle user-login"></i>
+                    <label class="nombre-user-login" for="nombre"></label>
+                </div>
+                <div class="nav-login-close">
+                    <p id="cierre-sesion" class="cerrar-sesion">Cerrar Sesión</p>
+                </div>
+            </div>
+            
             <div class="nav-1">
                 <a class="item-nav activo" href="index.html">Inicio</a></li>
                 <a class="item-nav" href="index.html">Contacto</a></li>
@@ -70,6 +80,23 @@
                 <p id="texto-alternativo"></p>
                 <p id="total-productos"></p>
             </div>
+        </section>
+
+        <!-- Formulario de Inicio de Sesión -->
+        <section id="modal-login" class = "modal-login">
+            <section class="modal-login-usuario">
+                <p class="modal-login-titulo">Iniciar Sesión</p>
+                <label class="modal-clase-usuario" for="">
+                    <span class="modal-label">E-Mail</span>
+                    <input id="login-email" name = "login-email" type="text" placeholder="Escriba su E-Mail">
+                </label>
+                <label class="modal-clase-clave" for="">
+                    <span class="modal-label">Clave</span>
+                    <input id="login-clave" name="login-clave" type="password" placeholder="Escriba su clave">
+                </label>
+                <p id="errorLog" class="errorLog">La combinación de E-Mail y clave no existen</p>
+                <button id="button-login" class="button-login">Ingresar</button>
+            </section>
         </section>
 
         <!-- Formulario Modal del Carrito de Compras -->
